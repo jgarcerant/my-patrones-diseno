@@ -6,23 +6,24 @@
  * El patrón nos permite producir distintos tipos y representaciones
  * de un objeto empleando el mismo código de construcción.
  *
- * * Es útil cuando necesitamos construir un objeto complejo con muchas partes
- * * y queremos que el proceso de construcción sea independiente de las partes
- * * que lo componen.
+ * Es útil cuando necesitamos construir un objeto complejo con muchas partes
+ * y queremos que el proceso de construcción sea independiente de las partes
+ * que lo componen.
  */
 
-import { COLORS } from '../helpers/colors.ts';
+import { COLORS } from "../helpers/colors.ts";
 
-//! Tarea: crear un QueryBuilder para construir consultas SQL
 /**
- * Debe de tener los siguientes métodos:
+ * ! Tarea: crear un QueryBuilder para construir consultas SQL
+ *
+ ** Debe de tener los siguientes métodos:
  * - constructor(table: string)
  * - select(fields: string[]): QueryBuilder -- si no se pasa ningún campo, se seleccionan todos con el (*)
  * - where(condition: string): QueryBuilder - opcional
  * - orderBy(field: string, order: string): QueryBuilder - opcional
  * - limit(limit: number): QueryBuilder - opcional
  * - execute(): string - retorna la consulta SQL
- * 
+ *
  ** Ejemplo de uso:
   const usersQuery = new QueryBuilder("users") // users es el nombre de la tabla
     .select("id", "name", "email")
@@ -50,37 +51,61 @@ class QueryBuilder {
   }
 
   select(...fields: string[]): QueryBuilder {
-    throw new Error('Method not implemented.');
+    if (fields.length === 0) {
+      this.fields.push("*"); // Si no se pasan campos, seleccionamos todos
+    } else {
+      this.fields.push(...fields);
+    }
+    return this;
   }
 
   where(condition: string): QueryBuilder {
-    throw new Error('Method not implemented.');
+    if (this.conditions.length === 0) {
+      this.conditions.push(condition); // Si es la primera condición, la añadimos directamente
+    } else {
+      this.conditions.push(`AND ${condition}`); // Añadimos condiciones adicionales con AND
+    }
+    return this;
   }
 
-  orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): QueryBuilder {
-    throw new Error('Method not implemented.');
+  orderBy(field: string, direction: "ASC" | "DESC" = "ASC"): QueryBuilder {
+    this.orderFields.push(`${field} ${direction}`);
+    return this;
   }
 
   limit(count: number): QueryBuilder {
-    throw new Error('Method not implemented.');
+    this.limitCount = count;
+    return this;
   }
 
   execute(): string {
     // Select id, name, email from users where age > 18 and country = 'Cri' order by name ASC limit 10;
-    throw new Error('Method not implemented.');
+    let query = `SELECT ${this.fields.join(", ")} FROM ${this.table}`;
+    if (this.conditions.length > 0) {
+      query += ` WHERE ${this.conditions.join(" ")}`;
+    }
+    if (this.orderFields.length > 0) {
+      query += ` ORDER BY ${this.orderFields.join(", ")}`;
+    }
+    if (this.limitCount) {
+      query += ` LIMIT ${this.limitCount}`;
+    }
+    return `${query};`; // Retorna la consulta SQL completa con punto y coma final
   }
 }
 
 function main() {
-  const usersQuery = new QueryBuilder('users')
-    .select('id', 'name', 'email')
-    .where('age > 18')
+  const usersQuery = new QueryBuilder("users")
+    .select("id", "name", "email")
+    .where("age > 18")
+    .where("gender = 'M'")
     .where("country = 'Cri'") // Esto debe de hacer una condición AND
-    .orderBy('name', 'ASC')
+    .orderBy("name", "ASC")
+    .orderBy("age", "DESC")
     .limit(10)
     .execute();
 
-  console.log('%cConsulta:\n', COLORS.red);
+  console.log("%cConsulta:\n", COLORS.red);
   console.log(usersQuery);
 }
 
