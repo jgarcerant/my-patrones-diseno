@@ -7,6 +7,18 @@
     {
       "folderPath": "my-patrones-diseno/01-creacionales/01.2-builder.ts/",
       "color": "foldercolorizer.color_00cc00"
+    },
+    {
+      "folderPath": "my-patrones-diseno/01-creacionales/02-factory-method.ts/",
+      "color": "foldercolorizer.color_00cc00"
+    },
+    {
+      "folderPath": "my-patrones-diseno/01-creacionales/02.2-factory-method.ts/",
+      "color": "foldercolorizer.color_00cc00"
+    },
+    {
+      "folderPath": "my-patrones-diseno/01-creacionales/03-abstract-factory.ts/",
+      "color": "foldercolorizer.color_00cc00"
     }
   ]
 }
